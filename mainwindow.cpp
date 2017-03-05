@@ -169,11 +169,21 @@ void MainWindow::on_pushButton_guided_mode_clicked()
 
 void MainWindow::on_pushButton_arm_clicked()
 {
+    if(ui->pushButton_arm->text() == "Arm")
+    {
     if(connector->send("Arm;"))
     {
         statusBar()->showMessage("Arming...",2000);
-
+        ui->pushButton_arm->setText("Disarm");
     }
+    }
+    else
+    {
+        connector->send("Disarm;");
+        ui->pushButton_arm->setText("Arm");
+        statusBar()->showMessage("Disarming...",2000);
+    }
+
 }
 
 void MainWindow::on_pushButton_start_mission_clicked()
