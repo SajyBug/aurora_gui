@@ -24,3 +24,6 @@ HEADERS  += mainwindow.h \
     UICmdResponse.h
 
 FORMS    += mainwindow.ui
+
+DISTFILES += \
+    no_tile_loaded.jpg
