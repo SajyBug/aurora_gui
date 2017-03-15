@@ -27,3 +27,4 @@ FORMS    += mainwindow.ui
 
 DISTFILES += \
     no_tile_loaded.jpg
+RESOURCES = source.qrc

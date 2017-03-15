@@ -8,8 +8,8 @@ MainWindow::MainWindow(QWidget *parent) :
     red(QColor(251, 36, 36)),
     green(QColor(73, 217, 73)),
     i(0),
-    image_path_tile("/home/sajjadtest/Desktop/no_tile_loaded.jpg"),
-    change_map_path("/home/sajjadtest/catkin_eclipce/src/rviz_satellite-master/mapscache/15118982290295364091")
+    image_path_tile(":/source/no_tile_loaded.jpg"),
+    change_map_path("/home/sajjadtest/catkin_aurora_rviz_satellite/src/rviz_satellite/mapscache/test")
 {
     ui->setupUi(this);
     timer = new QTimer(this);
