@@ -70,6 +70,8 @@ private slots:
 
     void on_pushButton_disconnect_clicked();
 
+    void on_pushButton_read_takeoff_gps_clicked();
+
 private:
     Ui::MainWindow *ui;
     Connector *connector;

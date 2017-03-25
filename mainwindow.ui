@@ -559,6 +559,19 @@
        <string>Generate Tile</string>
       </property>
      </widget>
+     <widget class="QPushButton" name="pushButton_read_takeoff_gps">
+      <property name="geometry">
+       <rect>
+        <x>170</x>
+        <y>250</y>
+        <width>141</width>
+        <height>31</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Read Takeoff GPS</string>
+      </property>
+     </widget>
     </widget>
    </widget>
   </widget>

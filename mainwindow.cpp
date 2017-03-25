@@ -163,7 +163,6 @@ void MainWindow::on_pushButton_guided_mode_clicked()
     if(connector->send("GuidedMode;"))
     {
         statusBar()->showMessage("GuidedMode...",3000);
-
     }
 }
 
@@ -370,4 +369,30 @@ void MainWindow::on_pushButton_disconnect_clicked()
     ui->label_show_guided->setText("---");
     ui->label_show_mode->setText("---");
 
+}
+
+void MainWindow::on_pushButton_read_takeoff_gps_clicked()
+{
+    au::UICmdResponse response;
+    connector->send("ReadTakeoffGps;",response);
+    if (response.error == au::UICmdResponse::E_OK && response.command.trimmed() == "ReadTakeoffGps")
+    {
+        for (au::UICmdResponse::Items::const_iterator itr = response.items.begin();
+             itr != response.items.end(); itr++)
+        {
+            if (itr->name == "takeoff_lat")
+            {
+                ui->lineEdit_latitude->setText(itr->data);
+                qDebug()<<itr->data;
+            }
+
+            if (itr->name == "takeoff_lon")
+            {
+                ui->lineEdit_longitude->setText(itr->data);
+                qDebug()<<itr->data;
+
+            }
+
+        }
+    }
 }
