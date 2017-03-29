@@ -1,6 +1,8 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
+
 using namespace au;
+
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow),
@@ -9,14 +11,13 @@ MainWindow::MainWindow(QWidget *parent) :
     green(QColor(73, 217, 73)),
     i(0),
     image_path_tile(":/source/no_tile_loaded.jpg"),
-    change_map_path("/home/sajjadtest/catkin_aurora_rviz_satellite/src/rviz_satellite/mapscache/test")
+    change_map_path("/home/sajjadtest/catkin_aurora_rviz_satellite/src/rviz_satellite/mapscache/test"),
+    read_waypoint("/home/sajjadtest/Desktop/mission.txt")
 {
     ui->setupUi(this);
     timer = new QTimer(this);
     connect(timer,SIGNAL(timeout()),this,SLOT(refresh()));
     init();
-
-
 }
 
 MainWindow::~MainWindow()
@@ -30,7 +31,6 @@ void MainWindow::init()
     ui->tableWidget_2->setHorizontalHeaderItem(0, new QTableWidgetItem("Lat"));
     ui->tableWidget_2->setHorizontalHeaderItem(1, new QTableWidgetItem("Lon"));
     ui->tableWidget_2->setHorizontalHeaderItem(2, new QTableWidgetItem("Alt"));
-
 
     ui->tableWidget->setRowCount(3);
     ui->tableWidget->setColumnCount(5);
@@ -69,7 +69,6 @@ void MainWindow::init()
 
 void MainWindow::on_pushButton_start_reading_clicked()
 {
-//    QTimer::singleShot(1000,this,SLOT(refresh()));
     timer->start(1000);
 }
 
@@ -88,7 +87,6 @@ void MainWindow::on_pushButton_connect_clicked()
     QString connAddr = ui->lineEdit_ip->text();
     quint16 connPort = ui->lineEdit_port->text().toInt();
     connector->connectToServer(connAddr,connPort);
-
 }
 
 void MainWindow::connOperating(const QString &command, int op)
@@ -119,15 +117,12 @@ void MainWindow::on_pushButton_takeoff_clicked()
         ui->lineEdit_altitude->setEnabled(false);
         ui->pushButton_takeoff->setEnabled(false);
     }
-
-
 }
 
 void MainWindow::on_pushButton_add_wayPoint_clicked()
 {
     i++;
     ui->tableWidget_2->setRowCount(i);
-
 }
 
 void MainWindow::on_pushButton_remove_wayPoint_clicked()
@@ -170,11 +165,11 @@ void MainWindow::on_pushButton_arm_clicked()
 {
     if(ui->pushButton_arm->text() == "Arm")
     {
-    if(connector->send("Arm;"))
-    {
+        if(connector->send("Arm;"))
+        {
         statusBar()->showMessage("Arming...",2000);
         ui->pushButton_arm->setText("Disarm");
-    }
+        }
     }
     else
     {
@@ -182,7 +177,6 @@ void MainWindow::on_pushButton_arm_clicked()
         ui->pushButton_arm->setText("Arm");
         statusBar()->showMessage("Disarming...",2000);
     }
-
 }
 
 void MainWindow::on_pushButton_start_mission_clicked()
@@ -190,7 +184,6 @@ void MainWindow::on_pushButton_start_mission_clicked()
     if(connector->send("StartMission;"))
     {
         statusBar()->showMessage("Mission Started...",2000);
-
     }
 }
 
@@ -244,7 +237,6 @@ void MainWindow::refresh()
 
             if (itr->name == "mavros_mode")
             {
-
                 ui->label_show_mode->setText(itr->data);
             }
         }
@@ -254,11 +246,7 @@ void MainWindow::refresh()
 void MainWindow::on_pushButton_stop_reading_clicked()
 {
     timer->stop();
-    ui->label_show_armed->setText("---");
-    ui->label_show_connected->setText("---");
-    ui->label_show_guided->setText("---");
-    ui->label_show_mode->setText("---");
-
+    reset_mavros_state();
 }
 
 void MainWindow::on_pushButton_set_default_tile_clicked()
@@ -296,19 +284,17 @@ void MainWindow::on_pushButton_generate_tile_clicked()
 //    double  origin_offset_y_ = y - center_tile_y_;
 
     const int min_x = std::max(0, center_tile_x_ - blocks_);
-      const int min_y = std::max(0, center_tile_y_ - blocks_);
-      const int max_x = std::min((1 << zoom_) - 1, center_tile_x_ + blocks_);
-      const int max_y = std::min((1 << zoom_) - 1, center_tile_y_ + blocks_);
+    const int min_y = std::max(0, center_tile_y_ - blocks_);
+    const int max_x = std::min((1 << zoom_) - 1, center_tile_x_ + blocks_);
+    const int max_y = std::min((1 << zoom_) - 1, center_tile_y_ + blocks_);
 
-      QImage image = reader.read();
-      for (int y = min_y; y <= max_y; y++) {
+    QImage image = reader.read();
+    for (int y = min_y; y <= max_y; y++) {
         for (int x = min_x; x <= max_x; x++) {
           // Generate filename
              image.save(cachedPathForTile(x, y, zoom_), "JPEG");
         }
-      }
-
-
+    }
 }
 
 QString MainWindow::cachedNameForTile(int x, int y, int z) const
@@ -325,12 +311,15 @@ QString MainWindow::cachedPathForTile(int x, int y, int z) const
 
 void MainWindow::latLonToTileCoords(double lat, double lon, unsigned int zoom, double &x, double &y)
 {
-  if (zoom > 31) {
+  if (zoom > 31)
+  {
     throw std::invalid_argument("Zoom level " + std::to_string(zoom) +
                                 " too high");
-  } else if (lat < -85.0511 || lat > 85.0511) {
+  } else if (lat < -85.0511 || lat > 85.0511)
+  {
     throw std::invalid_argument("Latitude " + std::to_string(lat) + " invalid");
-  } else if (lon < -180 && lon > 180) {
+  } else if (lon < -180 && lon > 180)
+  {
     throw std::invalid_argument("Longitude " + std::to_string(lon) +
                                 " invalid");
   }
@@ -348,7 +337,6 @@ void MainWindow::on_pushButton_land_mode_clicked()
     if(connector->send("LandMode;"))
     {
         statusBar()->showMessage("LandMode...",3000);
-
     }
 }
 
@@ -357,18 +345,21 @@ void MainWindow::on_pushButton_rtl_mode_clicked()
     if(connector->send("RTLMode;"))
     {
         statusBar()->showMessage("RTLMode...",3000);
-
     }
 }
 
 void MainWindow::on_pushButton_disconnect_clicked()
 {
     connector->disconnectFromServer();
+    reset_mavros_state();
+}
+
+void MainWindow::reset_mavros_state()
+{
     ui->label_show_armed->setText("---");
     ui->label_show_connected->setText("---");
     ui->label_show_guided->setText("---");
     ui->label_show_mode->setText("---");
-
 }
 
 void MainWindow::on_pushButton_read_takeoff_gps_clicked()
@@ -390,9 +381,29 @@ void MainWindow::on_pushButton_read_takeoff_gps_clicked()
             {
                 ui->lineEdit_longitude->setText(itr->data);
                 qDebug()<<itr->data;
-
             }
-
         }
+    }
+}
+
+void MainWindow::on_pushButton_read_wayPoint_clicked()
+{
+    //counting all of files line
+    std::ifstream ifile(read_waypoint.toStdString().c_str());
+    std::string line;
+    int c_line = 0;
+    while (std::getline(ifile, line))
+    {
+        if(c_line)
+        {
+            i++;
+            ui->tableWidget_2->setRowCount(i);
+            QString qstr = QString::fromStdString(line);
+            QStringList list = qstr.split(QRegExp("\\s+"), QString::SkipEmptyParts);
+            ui->tableWidget_2->setItem(i-1,0,new QTableWidgetItem(list[8]));
+            ui->tableWidget_2->setItem(i-1,1,new QTableWidgetItem(list[9]));
+            qDebug()<<list[8];
+          }
+        c_line++;
     }
 }

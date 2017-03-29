@@ -8,6 +8,9 @@
 #include <QFileDialog>
 #include <QImageReader>
 #include <QImage>
+#include <fstream>
+#include <iostream>
+#include <sstream>
 
 namespace Ui {
 class MainWindow;
@@ -51,6 +54,8 @@ private slots:
 
     void refresh();
 
+    void reset_mavros_state();
+
     QString cachedNameForTile(int x, int y, int z) const;
 
     QString cachedPathForTile(int x, int y, int z) const;
@@ -72,6 +77,8 @@ private slots:
 
     void on_pushButton_read_takeoff_gps_clicked();
 
+    void on_pushButton_read_wayPoint_clicked();
+
 private:
     Ui::MainWindow *ui;
     Connector *connector;
@@ -84,6 +91,7 @@ private:
     QTimer *timer;
     QString image_path_tile;
     QString change_map_path;
+    QString read_waypoint;
 
 };
 
