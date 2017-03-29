@@ -389,6 +389,7 @@ void MainWindow::on_pushButton_read_takeoff_gps_clicked()
 void MainWindow::on_pushButton_read_wayPoint_clicked()
 {
     //counting all of files line
+    i=0;
     std::ifstream ifile(read_waypoint.toStdString().c_str());
     std::string line;
     int c_line = 0;
