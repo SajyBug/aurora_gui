@@ -79,6 +79,8 @@ private slots:
 
     void on_pushButton_read_wayPoint_clicked();
 
+    void on_pushButton_send_heart_clicked();
+
 private:
     Ui::MainWindow *ui;
     Connector *connector;

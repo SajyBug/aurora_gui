@@ -408,3 +408,13 @@ void MainWindow::on_pushButton_read_wayPoint_clicked()
         c_line++;
     }
 }
+
+void MainWindow::on_pushButton_send_heart_clicked()
+{
+    qDebug()<<"Heart "+ui->lineEdit_heart_lat->text()+" "+ui->lineEdit_heart_lon->text()+";";
+    if(connector->send("Heart "+ui->lineEdit_heart_lat->text()+" "+ui->lineEdit_heart_lon->text()+";"))
+    {
+        qDebug()<<"Heart "+ui->lineEdit_heart_lat->text()+" "+ui->lineEdit_heart_lon->text()+";";
+    }
+
+}
